@@ -89,6 +89,7 @@ function PersonalForm({ formClassName, personal, setPersonal }) {
                 value={editedPersonal.lastName}
                 label="Last name: "
                 name="lastName"
+                id="lastName"
                 onChange={(e) => handleChange(e, "lastName")}
               />
             ) : (
@@ -110,6 +111,7 @@ function PersonalForm({ formClassName, personal, setPersonal }) {
                 value={editedPersonal.address}
                 label="Address: "
                 name="address"
+                id="address"
                 onChange={(e) => handleChange(e, "address")}
               />
             ) : (
@@ -234,6 +236,7 @@ function EducationalForm({ formClassName, educational, setEducational }) {
                 value={editedEducational.year}
                 label="year: "
                 name="year"
+                id="year"
                 onChange={(e) => handleChange(e, "year")}
               />
             ) : (
@@ -269,16 +272,26 @@ function EducationalForm({ formClassName, educational, setEducational }) {
   );
 }
 
-function CustomInput({ className, type, value, label, name, onChange, range }) {
+function CustomInput({
+  className,
+  type,
+  value,
+  label,
+  name,
+  id,
+  onChange,
+  range,
+}) {
   return (
     <>
-      <label>{label}</label>
+      <label htmlFor={id}>{label}</label>
       <input
         className={className}
         placeholder="has"
         type={type}
         value={value}
         name={name}
+        id={id}
         onChange={(e, name) => onChange(e, name)}
         min={range ? range[0] : null}
         max={range ? range[1] : null}
