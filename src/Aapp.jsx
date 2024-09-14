@@ -8,6 +8,8 @@ const personalInputs = [
     name: "firstName",
     value: "",
     id: "userFirstName",
+    minlength: 1,
+    maxlegth: 60,
     // define onChange in child for it is there that the (controlled) inputs intermediary values get stored until submit
     label: "First name:", //goes into label or p element
   },
@@ -16,6 +18,9 @@ const personalInputs = [
     name: "lastName",
     value: "",
     id: "userLastName",
+    required: true,
+    minlength: 1,
+    maxlegth: 60,
     label: "Last name:",
   },
   {
@@ -23,6 +28,8 @@ const personalInputs = [
     name: "birthday",
     value: "",
     id: "userBirthday",
+    required: true,
+    //range eg 1900-2010
     label: "Birthday:",
   },
 ];
@@ -159,13 +166,19 @@ function Form({
         id={input.id}
         value={childData[input.name] || ""}
         onChange={handleChange}
+        required
       ></Custinput>
     )
   );
 
   return (
     <>
-      <form onSubmit={handleSubmit} action="handleSubmit" method="post">
+      <form
+        //noValidate
+        onSubmit={handleSubmit}
+        action="handleSubmit"
+        method="post"
+      >
         {inputList}
 
         <br />
