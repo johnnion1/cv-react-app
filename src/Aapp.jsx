@@ -34,6 +34,43 @@ const personalInputs = [
   },
 ];
 
+//Custom error messages:
+
+//personalInputs.forEach(input=> errorMessages[input.name] = {
+//    valueMissing: "",
+//    typeMismatch: "",
+//    tooShort: ""
+//    }
+//    );
+//errmsgs =
+
+const errorMessages = {
+  firstName: {
+    valueMissing: "",
+    typeMismatch: "",
+    tooShort: "",
+  },
+  lastName: [
+    "Please enter a first name.",
+    "Please use only characters, numbers or apostrophes ['], stop marks [.] or dashes [-].",
+    "Entered value should be at least 2 characters.",
+  ],
+  birthday: ["Please enter your birthday.",
+    "Please select a valid date.",
+    "Entered date can not be before 1903.",
+]
+  school: [
+    "Please enter an educational facility.",
+    "Please use only characters, numbers or apostrophes ['], stop marks [.] or dashes [-].",
+    "Entered value should be at least 5 characters.",
+  ],
+  schooldate: [
+    "Please select when your education was finished.",
+    "Please select a valid date.",
+    "Entered date can not be before 1913.",
+  ],
+};
+
 function Aapp() {
   //set states for storing and using values of each child form component (personal, edu and work)
   const [parentValues, setParentValues] = useState({
