@@ -10,7 +10,6 @@ const personalInputs = [
     id: "userFirstName",
     minlength: 1,
     maxlegth: 60,
-    // define onChange in child for it is there that the (controlled) inputs intermediary values get stored until submit
     label: "First name:", //goes into label or p element
   },
   {
@@ -34,6 +33,38 @@ const personalInputs = [
   },
 ];
 
+const educationalInputs = [
+  {
+    type: "text",
+    name: "edFacility",
+    value: "",
+    id: "userEdFacility",
+    minlength: 1,
+    maxlegth: 60,
+    label: "Educational Facility:",
+  },
+  {
+    type: "text",
+    name: "study",
+    value: "",
+    id: "userStudy",
+    required: true,
+    minlength: 1,
+    maxlegth: 60,
+    label: "Study:",
+  },
+  {
+    //should be two dates or range date picker
+    type: "date",
+    name: "studyFinish",
+    value: "",
+    id: "userStudyFinish",
+    required: true,
+    //range
+    label: "Finished:",
+  },
+];
+
 function Aapp() {
   //set states for storing and using values of each child form component (personal, edu and work)
   const [parentValues, setParentValues] = useState({
@@ -42,6 +73,16 @@ function Aapp() {
       lastName: "",
       birthday: "",
       isActive: true,
+    },
+    education: {
+      entries: [
+        {
+          facility: "",
+          dateOfStudy: "",
+          graduation: "",
+        },
+      ],
+      isActive: false,
     },
     work: {
       isActive: false,
