@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { act, useState } from "react";
 import "./App.css";
 
 const personalInputs = [
@@ -88,6 +88,11 @@ function Aapp() {
       isActive: false,
     },
   });
+  const [activeForms, setActiveForms] = useState({
+    personal: true,
+    education: [0, 1],
+    work: true,
+  });
 
   function handleSubmit(childData, submitIdToken) {
     //const newParentData = { ...parentValues, personal: { ...childData } };
@@ -123,9 +128,31 @@ function Aapp() {
       />
     );
   }); */
+  function handleSetActive(token, ind) {
+    let newActiveForms = [];
+    if (ind) {
+      const c = activeForms[token].includes(ind);
+      if (c) {
+        const i = activeForms[token].indexOf(ind);
+        newActiveForms = activeForms[token].splice(i, 1);
+        console.log(activeForms);
+      } else {
+        newActiveForms = activeForms[token].push(ind);
+      }
+    } else {
+      newActiveForms = {
+        ...activeForms,
+        [token]: activeForms[token] == false ? true : false,
+      };
+    }
+    setActiveForms(newActiveForms);
+  }
+
   return (
     <>
       <Form
+        isEditable={activeForms.personal}
+        handleSetActive={handleSetActive}
         parentValues={parentValues.personal}
         handleFormSubmit={handleSubmit}
         inputElementArr={personalInputs}
@@ -175,12 +202,22 @@ function PersonalForm({props}) {
 }
 */
 function Form({
+  isEditable,
+  handleSetActive,
   parentValues,
   handleFormSubmit,
   submitIdToken,
   inputElementArr,
 }) {
   const [childData, setChildData] = useState(parentValues);
+
+  const handleClick = () => {
+    if (parentValues.index) {
+      handleSetActive(submitIdToken, parentValues.index);
+    } else {
+      handleSetActive(submitIdToken);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -194,7 +231,7 @@ function Form({
   };
 
   const inputList = inputElementArr.map((input) =>
-    !parentValues.isActive ? (
+    !isEditable ? (
       <>
         <p key={input.id}>{input.label}</p>
         <p>{parentValues[input.name] !== "" ? parentValues[input.name] : ""}</p>
@@ -224,7 +261,9 @@ function Form({
 
         <br />
 
-        <button type="button">{parentValues.isActive ? "Back" : "Edit"}</button>
+        <button onClick={handleClick} type="button">
+          {isEditable ? "Back" : "Edit"}
+        </button>
 
         <button type="submit" disabled={!parentValues.isActive}>
           Submit
