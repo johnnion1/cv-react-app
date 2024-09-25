@@ -72,7 +72,7 @@ function Aapp() {
       firstName: "dorio",
       lastName: "",
       birthday: "",
-      isActive: true,
+      index: 0,
     },
     education: {
       entries: [
@@ -80,9 +80,15 @@ function Aapp() {
           facility: "",
           dateOfStudy: "",
           graduation: "",
+          index: 0,
+        },
+        {
+          facility: "",
+          dateOfStudy: "",
+          graduation: "",
+          index: 1,
         },
       ],
-      isActive: false,
     },
     work: {
       isActive: false,
@@ -147,17 +153,35 @@ function Aapp() {
     }
     setActiveForms(newActiveForms);
   }
+  function createForms(arr) {
+    let formsArray = [];
+    arr.forEach((entry) => {
+      formsArray.push(
+        <>
+          <Form
+            key={"-Component" + formsArray.length}
+            parentValues={entry}
+            handleFormSubmit={handleSubmit}
+            inputElementArr={educationalInputs}
+            submitIdToken="educational"
+          ></Form>
+        </>
+      );
+    });
+    return formsArray;
+  }
+  const edForms = createForms(parentValues.education.entries);
 
   return (
     <>
       <Form
-        isEditable={activeForms.personal}
-        handleSetActive={handleSetActive}
+        key={"personalComponent"}
         parentValues={parentValues.personal}
         handleFormSubmit={handleSubmit}
         inputElementArr={personalInputs}
         submitIdToken="personal"
       ></Form>
+      {edForms}
     </>
   );
 }
@@ -202,22 +226,24 @@ function PersonalForm({props}) {
 }
 */
 function Form({
-  isEditable,
-  handleSetActive,
   parentValues,
   handleFormSubmit,
   submitIdToken,
   inputElementArr,
 }) {
   const [childData, setChildData] = useState(parentValues);
-
-  const handleClick = () => {
+  const [isEditable, setIsEditable] = useState(false);
+  /*  let isEditable = false; */
+  const handleSetActive = () => {
+    setIsEditable(isEditable == true ? false : true);
+  };
+  /* const handleClick = () => {
     if (parentValues.index) {
       handleSetActive(submitIdToken, parentValues.index);
     } else {
       handleSetActive(submitIdToken);
     }
-  };
+  }; */
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -230,29 +256,43 @@ function Form({
     setChildData(newPersonal);
   };
 
-  const inputList = inputElementArr.map((input) =>
-    !isEditable ? (
-      <>
-        <p key={input.id}>{input.label}</p>
-        <p>{parentValues[input.name] !== "" ? parentValues[input.name] : ""}</p>
-      </>
-    ) : (
-      <Custinput
-        type={input.type != !null ? input.type : "text"}
-        key={input.id}
-        name={input.name}
-        id={input.id}
-        value={childData[input.name] || ""}
-        onChange={handleChange}
-        required
-      ></Custinput>
-    )
-  );
+  const inputList = inputElementArr.map((input) => (
+    <div
+      key={
+        submitIdToken + "-" + input.name + "-InputDiv-" + parentValues.index
+        //`${submitIdToken}-${input.name}-InputDiv-${parentValues.index}`
+      }
+    >
+      {!isEditable ? (
+        <>
+          <p key={input.id}>{input.label}</p>
+          <p>
+            {parentValues[input.name] !== "" ? parentValues[input.name] : ""}
+          </p>
+        </>
+      ) : (
+        <Custinput
+          type={input.type != !null ? input.type : "text"}
+          key={input.id}
+          name={input.name}
+          id={input.id}
+          value={childData[input.name] || ""}
+          onChange={handleChange}
+          required
+        ></Custinput>
+      )}
+    </div>
+  ));
 
   return (
     <>
       <form
         //noValidate
+        key={
+          parentValues.index
+            ? submitIdToken + "Form-" + parentValues.index
+            : submitIdToken + "Form"
+        }
         onSubmit={handleSubmit}
         action="handleSubmit"
         method="post"
@@ -261,11 +301,11 @@ function Form({
 
         <br />
 
-        <button onClick={handleClick} type="button">
+        <button onClick={handleSetActive} type="button">
           {isEditable ? "Back" : "Edit"}
         </button>
 
-        <button type="submit" disabled={!parentValues.isActive}>
+        <button type="submit" disabled={!isEditable}>
           Submit
         </button>
       </form>
