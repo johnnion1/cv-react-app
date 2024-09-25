@@ -36,7 +36,7 @@ const personalInputs = [
 const educationalInputs = [
   {
     type: "text",
-    name: "edFacility",
+    name: "facility",
     value: "",
     id: "userEdFacility",
     minlength: 1,
@@ -56,7 +56,7 @@ const educationalInputs = [
   {
     //should be two dates or range date picker
     type: "date",
-    name: "studyFinish",
+    name: "dateOfStudy",
     value: "",
     id: "userStudyFinish",
     required: true,
@@ -74,18 +74,18 @@ function Aapp() {
       birthday: "",
       index: 0,
     },
-    education: {
+    educational: {
       entries: [
         {
-          facility: "",
+          facility: "as",
           dateOfStudy: "",
-          graduation: "",
+          study: "man",
           index: 0,
         },
         {
           facility: "",
           dateOfStudy: "",
-          graduation: "",
+          study: "",
           index: 1,
         },
       ],
@@ -94,72 +94,33 @@ function Aapp() {
       isActive: false,
     },
   });
-  const [activeForms, setActiveForms] = useState({
-    personal: true,
-    education: [0, 1],
-    work: true,
-  });
 
   function handleSubmit(childData, submitIdToken) {
     //const newParentData = { ...parentValues, personal: { ...childData } };
-
+    if (parentValues[submitIdToken].entries.length >= 1) {
+      let newData = parentValues;
+      newData[submitIdToken].entries[childData.index] = childData;
+      console.log(newData);
+      setParentValues(newData);
+      /* setParentValues((prevValues) => ({
+      ...prevValues,
+      [submitIdToken].[childData.index] : { ...childData },
+    }))
+}
     setParentValues((prevValues) => ({
       ...prevValues,
-      [submitIdToken]: { ...childData },
-    }));
-    //   setParentValues(newParentData);
-    /* 
-   let newData = {inputs:[]}
-   in parentdata inputs array
-    find the input with the name of formData[0].name (or id)
-    copy to newData.inputs
-    change the value to formData[0].value
-  repeat for every formData item
-   */
-  }
-  /* form
-      map(inputs)
-      button add
-      button submit => setParentPersonalInputs
-     */
-  /* 
-  return personalInputs.map((input) => {
-    return (
-      <input
-        type={input.type != !null ? input.type : "text"}
-        key={input.id}
-        name={input.name}
-        id={input.id}
-        value={input.value}
-      />
-    );
-  }); */
-  function handleSetActive(token, ind) {
-    let newActiveForms = [];
-    if (ind) {
-      const c = activeForms[token].includes(ind);
-      if (c) {
-        const i = activeForms[token].indexOf(ind);
-        newActiveForms = activeForms[token].splice(i, 1);
-        console.log(activeForms);
-      } else {
-        newActiveForms = activeForms[token].push(ind);
-      }
-    } else {
-      newActiveForms = {
-        ...activeForms,
-        [token]: activeForms[token] == false ? true : false,
-      };
+      [submitIdToken] { ...childData },
+    })); */
     }
-    setActiveForms(newActiveForms);
   }
+
   function createForms(arr) {
     let formsArray = [];
     arr.forEach((entry) => {
       formsArray.push(
         <>
           <Form
-            key={"-Component" + formsArray.length}
+            key={"Component" + formsArray.length}
             parentValues={entry}
             handleFormSubmit={handleSubmit}
             inputElementArr={educationalInputs}
@@ -170,7 +131,7 @@ function Aapp() {
     });
     return formsArray;
   }
-  const edForms = createForms(parentValues.education.entries);
+  const edForms = createForms(parentValues.educational.entries);
 
   return (
     <>
@@ -186,45 +147,6 @@ function Aapp() {
   );
 }
 
-/*  /* <Form
-          parentValues={parentValues}
-          handleSubmit={handleSubmit}
-          personalInputs={personalInputs}
-        >
-          {  <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-            }}
-          >
-            {parentValues.isActive ? "Back" : "Edit"}
-          </button> }
-        </Form> 
-function PersonalForm({props}) {
-  const [childState, setChildState] = useState(props) // or props.input 
-
-  return (<>
-    //input / p if props.inactive 
-    //label / p
-
-    //input / p
-    //label / p
-    
-    //input / p
-    //label / p
-
-    => = map inputs and render automatically <CustomInputs> : <p> elements
-
-    //Add Button
-
-    //Submit / Edit Button if props.inactive
-    if input.value !== props.input.value, submit saves childState to setParentPersonal
-    otherwise it's disabled
-
-
-  </>)
-}
-*/
 function Form({
   parentValues,
   handleFormSubmit,
@@ -235,7 +157,7 @@ function Form({
   const [isEditable, setIsEditable] = useState(false);
   /*  let isEditable = false; */
   const handleSetActive = () => {
-    setIsEditable(isEditable == true ? false : true);
+    setIsEditable((isEditable) => (isEditable == true ? false : true));
   };
   /* const handleClick = () => {
     if (parentValues.index) {
@@ -248,9 +170,19 @@ function Form({
   const handleSubmit = (e) => {
     e.preventDefault();
     handleFormSubmit(childData, submitIdToken);
+    handleSetActive();
   };
 
   const handleChange = (e) => {
+    //   setParentValues(newParentData);
+    /* 
+   let newData = {inputs:[]}
+   in parentdata inputs array
+    find the input with the name of formData[0].name (or id)
+    copy to newData.inputs
+    change the value to formData[0].value
+  repeat for every formData item
+   */
     e.preventDefault();
     let newPersonal = { ...childData, [e.target.name]: e.target.value };
     setChildData(newPersonal);
