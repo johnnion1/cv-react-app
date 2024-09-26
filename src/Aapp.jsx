@@ -78,7 +78,7 @@ function Aapp() {
       entries: [
         {
           facility: "as",
-          dateOfStudy: "",
+          dateOfStudy: "2023-01-01",
           study: "man",
           index: 0,
         },
@@ -157,20 +157,24 @@ function Form({
   const [isEditable, setIsEditable] = useState(false);
   /*  let isEditable = false; */
   const handleSetActive = () => {
-    setIsEditable((isEditable) => (isEditable == true ? false : true));
-  };
-  /* const handleClick = () => {
-    if (parentValues.index) {
-      handleSetActive(submitIdToken, parentValues.index);
-    } else {
-      handleSetActive(submitIdToken);
+    if (isEditable == true) {
+      childData == parentValues
+        ? setIsEditable(() => false)
+        : confirm("Discard changes?")
+        ? goBack()
+        : null;
+    } else if (isEditable == false) {
+      setIsEditable(() => true);
     }
-  }; */
-
+  };
+  const goBack = () => {
+    setIsEditable(() => false);
+    setChildData(parentValues);
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
     handleFormSubmit(childData, submitIdToken);
-    handleSetActive();
+    setIsEditable(() => false);
   };
 
   const handleChange = (e) => {
