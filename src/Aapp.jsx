@@ -201,21 +201,26 @@ function Form({
     >
       {!isEditable ? (
         <>
-          <p key={input.id}>{input.label}</p>
+          <p /* key={input.id} */>{input.label}</p>
           <p>
             {parentValues[input.name] !== "" ? parentValues[input.name] : ""}
           </p>
         </>
       ) : (
-        <Custinput
-          type={input.type != !null ? input.type : "text"}
-          key={input.id}
-          name={input.name}
-          id={input.id}
-          value={childData[input.name] || ""}
-          onChange={handleChange}
-          required
-        ></Custinput>
+        <>
+          <label htmlFor={input.id + "-" + parentValues.index}>
+            {input.label}
+          </label>
+          <Custinput
+            type={input.type != !null ? input.type : "text"}
+            key={input.id + parentValues.index}
+            name={input.name + "-" + parentValues.index}
+            id={input.id + "-" + parentValues.index}
+            value={childData[input.name] || ""}
+            onChange={handleChange}
+            required
+          ></Custinput>
+        </>
       )}
     </div>
   ));
@@ -224,11 +229,7 @@ function Form({
     <>
       <form
         //noValidate
-        key={
-          parentValues.index
-            ? submitIdToken + "Form-" + parentValues.index
-            : submitIdToken + "Form"
-        }
+        key={submitIdToken + "Form-" + parentValues.index}
         onSubmit={handleSubmit}
         action="handleSubmit"
         method="post"
