@@ -1,69 +1,11 @@
 /* eslint-disable react/prop-types */
 import { act, useState } from "react";
 import "./App.css";
+import inputTemplates from "./inputTemplates";
 
-const personalInputs = [
-  {
-    type: "text",
-    name: "firstName",
-    value: "",
-    id: "userFirstName",
-    minlength: 1,
-    maxlegth: 60,
-    label: "First name:", //goes into label or p element
-  },
-  {
-    type: "text",
-    name: "lastName",
-    value: "",
-    id: "userLastName",
-    required: true,
-    minlength: 1,
-    maxlegth: 60,
-    label: "Last name:",
-  },
-  {
-    type: "date",
-    name: "birthday",
-    value: "",
-    id: "userBirthday",
-    required: true,
-    //range eg 1900-2010
-    label: "Birthday:",
-  },
-];
-
-const educationalInputs = [
-  {
-    type: "text",
-    name: "edFacility",
-    value: "",
-    id: "userEdFacility",
-    minlength: 1,
-    maxlegth: 60,
-    label: "Educational Facility:",
-  },
-  {
-    type: "text",
-    name: "study",
-    value: "",
-    id: "userStudy",
-    required: true,
-    minlength: 1,
-    maxlegth: 60,
-    label: "Study:",
-  },
-  {
-    //should be two dates or range date picker
-    type: "date",
-    name: "studyFinish",
-    value: "",
-    id: "userStudyFinish",
-    required: true,
-    //range
-    label: "Finished:",
-  },
-];
+const personalInputs = inputTemplates.personalInputs;
+const educationalInputs = inputTemplates.educationalInputs;
+const workInputs = inputTemplates.workInputs;
 
 function Aapp() {
   //set states for storing and using values of each child form component (personal, edu and work)
