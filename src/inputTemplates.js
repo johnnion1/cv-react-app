@@ -65,7 +65,7 @@ const workInputs = [
     type: "text",
     name: "company",
     value: "",
-    id: "userWorkCompanyName",
+    id: "userWorkCompany",
     minlength: 1,
     maxlegth: 60,
     label: "Company:",
@@ -93,8 +93,6 @@ const workInputs = [
     name: "fromEmployed",
     value: "",
     id: "userWorkStart",
-    minlength: 1,
-    maxlegth: 60,
     label: "Employed from:",
   },
   {
@@ -102,8 +100,6 @@ const workInputs = [
     name: "toEmployed",
     value: "",
     id: "userWorkEnd",
-    minlength: 1,
-    maxlegth: 60,
     label: "until:",
   },
 ];
