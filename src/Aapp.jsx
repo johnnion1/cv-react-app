@@ -64,6 +64,14 @@ const educationalInputs = [
     label: "Finished:",
   },
 ];
+const entryTemplates = {
+  educational: {
+    facility: "",
+    dateOfStudy: "",
+    study: "",
+    index: null,
+  },
+};
 
 function Aapp() {
   //set states for storing and using values of each child form component (personal, edu and work)
@@ -83,7 +91,7 @@ function Aapp() {
           index: 0,
         },
         {
-          facility: "",
+          facility: "test",
           dateOfStudy: "",
           study: "",
           index: 1,
@@ -94,7 +102,46 @@ function Aapp() {
       isActive: false,
     },
   });
+  function handleAddEntry(e, token) {
+    e.preventDefault();
+    //check if last entry is empty
+    const prevEntry =
+      parentValues[token].entries[parentValues[token].entries.length - 1];
+    let prevIsEmpty = true;
+    for (let i in prevEntry) {
+      i == "index" ? null : prevEntry[i] != "" ? (prevIsEmpty = false) : null;
+    }
 
+    if (!parentValues[token].entries || prevIsEmpty) {
+      console.log("empty or no entries");
+      console.log(parentValues);
+      return;
+    }
+    const newIndex = parentValues[token].entries.length;
+    const newEntry = entryTemplates[token];
+    newEntry.index = newIndex;
+    const newValues = parentValues[token];
+    newValues.entries.push(newEntry);
+    setParentValues((prevValues) => ({ ...prevValues, [token]: newValues }));
+  }
+  function changeIndex(token, from, to) {
+    // 1 copy and store pV[token].entries[from]   ({..index:1} )
+    // 2 remove 'from' ind from array (newEntries = pV)
+    // [ {..index:0}, {..index:2}, {..index:3}, ]
+    //cleanse the array
+    //for (let i = 0; i < arrlen; i++) {
+    //array[i].index = i;
+    //}
+    //put new input in ? how to pass 'to':
+    //calculate before calling where the element is supposed to go
+    // only do it incremental: up or down
+    // drag and drop
+    //nope
+    //do increment ad decrese
+    //up and down buttons:
+    //automatic order?
+    // if range from is picked, order the ones that have it by date the rest as is
+  }
   function handleSubmit(childData, submitIdToken) {
     //const newParentData = { ...parentValues, personal: { ...childData } };
     if (parentValues[submitIdToken].entries.length >= 1) {
@@ -143,6 +190,11 @@ function Aapp() {
         submitIdToken="personal"
       ></Form>
       {edForms}
+      <button
+        type="button"
+        className="addBtn"
+        onClick={(e) => handleAddEntry(e, "educational")}
+      ></button>
     </>
   );
 }
