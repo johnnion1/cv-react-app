@@ -124,56 +124,69 @@ function Aapp() {
     newValues.entries.push(newEntry);
     setParentValues((prevValues) => ({ ...prevValues, [token]: newValues }));
   }
-  function changeIndex(token, from, to) {
-    // 1 copy and store pV[token].entries[from]   ({..index:1} )
-    // 2 remove 'from' ind from array (newEntries = pV)
-    // [ {..index:0}, {..index:2}, {..index:3}, ]
-    //cleanse the array
-    //for (let i = 0; i < arrlen; i++) {
-    //array[i].index = i;
-    //}
-    //put new input in ? how to pass 'to':
-    //calculate before calling where the element is supposed to go
-    // only do it incremental: up or down
-    // drag and drop
-    //nope
-    //do increment ad decrese
-    //up and down buttons:
-    //automatic order?
-    // if range from is picked, order the ones that have it by date the rest as is
+  function changeIndex(token, ind, up) {
+    if (
+      (ind == 0 && up == true) ||
+      (ind == parentValues[token].entries.length - 1 && up == false)
+    ) {
+      console.log(parentValues[token]);
+      console.log(ind.toString() + " " + up ? "up" : "down");
+      console.log("not possible");
+      return;
+    }
+    const newData = parentValues[token].entries;
+    console.log(ind);
+    console.log(newData[ind]);
+    let temp = newData[ind];
+    let swapInd = up ? ind - 1 : ind + 1;
+    temp.index = swapInd;
+    newData[ind] = newData[swapInd];
+    newData[ind].index = ind;
+    newData[swapInd] = temp;
+    console.log(newData);
+
+    let newParentTokenData = { ...parentValues[token] };
+    newParentTokenData.entries = newData;
+    setParentValues((prevValues) => ({ ...prevValues, ...newData }));
+    console.log(parentValues);
+    //make {entries: newarr, etc: asd} amd put ({...oldValues, [token]: ...newObj})
   }
+
   function handleSubmit(childData, submitIdToken) {
-    //const newParentData = { ...parentValues, personal: { ...childData } };
     if (parentValues[submitIdToken].entries.length >= 1) {
       let newData = parentValues;
       newData[submitIdToken].entries[childData.index] = childData;
       console.log(newData);
       setParentValues(newData);
-      /* setParentValues((prevValues) => ({
-      ...prevValues,
-      [submitIdToken].[childData.index] : { ...childData },
-    }))
-}
-    setParentValues((prevValues) => ({
-      ...prevValues,
-      [submitIdToken] { ...childData },
-    })); */
     }
   }
 
   function createForms(arr) {
     let formsArray = [];
+    //use proper keys!!
+    let ctr = 0;
     arr.forEach((entry) => {
       formsArray.push(
-        <>
+        <div key={"Component" + ctr++}>
           <Form
-            key={"Component" + formsArray.length}
             parentValues={entry}
             handleFormSubmit={handleSubmit}
             inputElementArr={educationalInputs}
             submitIdToken="educational"
           ></Form>
-        </>
+          <button
+            type="button"
+            onClick={() => changeIndex("educational", entry.index, true)}
+          >
+            Up
+          </button>
+          <button
+            type="button"
+            onClick={() => changeIndex("educational", entry.index, false)}
+          >
+            Down
+          </button>
+        </div>
       );
     });
     return formsArray;
@@ -230,15 +243,6 @@ function Form({
   };
 
   const handleChange = (e) => {
-    //   setParentValues(newParentData);
-    /* 
-   let newData = {inputs:[]}
-   in parentdata inputs array
-    find the input with the name of formData[0].name (or id)
-    copy to newData.inputs
-    change the value to formData[0].value
-  repeat for every formData item
-   */
     e.preventDefault();
     let newPersonal = { ...childData, [e.target.name]: e.target.value };
     setChildData(newPersonal);
