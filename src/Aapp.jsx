@@ -102,6 +102,7 @@ function Aapp() {
       isActive: false,
     },
   });
+  let edForms = null;
   function handleAddEntry(e, token) {
     e.preventDefault();
     //check if last entry is empty
@@ -153,12 +154,30 @@ function Aapp() {
   }
 
   function handleSubmit(childData, submitIdToken) {
-    if (parentValues[submitIdToken].entries.length >= 1) {
+    console.log(submitIdToken);
+    if (
+      parentValues[submitIdToken].entries &&
+      parentValues[submitIdToken].entries.length >= 1
+    ) {
       let newData = parentValues;
       newData[submitIdToken].entries[childData.index] = childData;
       console.log(newData);
-      setParentValues(newData);
+      setParentValues(() => newData);
+      //the child doesnt update anymore when this is clicked,
+      //n either does it when the indexes of the entries are changed
+      // (= the form children dont change even if the parent state changes)
+    } else {
+      const newData = {};
+      newData[submitIdToken] = childData;
+      console.log(newData);
+      setParentValues((prevValues) => ({ ...prevValues, ...newData }));
+      /*   setParentValues((oldData) => ({
+        ...oldData,
+        [submitIdToken]: childData,
+      })); */
+      console.log(parentValues);
     }
+    console.log(parentValues);
   }
 
   function createForms(arr) {
@@ -191,7 +210,7 @@ function Aapp() {
     });
     return formsArray;
   }
-  const edForms = createForms(parentValues.educational.entries);
+  edForms = createForms(parentValues.educational.entries);
 
   return (
     <>
@@ -244,6 +263,7 @@ function Form({
 
   const handleChange = (e) => {
     e.preventDefault();
+    //e.target.name - last char!
     let newPersonal = { ...childData, [e.target.name]: e.target.value };
     setChildData(newPersonal);
   };
@@ -257,7 +277,7 @@ function Form({
     >
       {!isEditable ? (
         <>
-          <p key={input.id}>{input.label}</p>
+          <p key={input.id + parentValues.index + "p"}>{input.label}</p>
           <p>
             {parentValues[input.name] !== "" ? parentValues[input.name] : ""}
           </p>
@@ -265,9 +285,9 @@ function Form({
       ) : (
         <Custinput
           type={input.type != !null ? input.type : "text"}
-          key={input.id}
+          key={input.id + parentValues.index}
           name={input.name}
-          id={input.id}
+          id={input.id + parentValues.index}
           value={childData[input.name] || ""}
           onChange={handleChange}
           required
