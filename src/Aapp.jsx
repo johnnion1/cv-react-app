@@ -130,7 +130,9 @@ function Form({
   repeat for every formData item
    */
     e.preventDefault();
+
     let newPersonal = { ...childData, [e.target.name]: e.target.value };
+    console.log(newPersonal);
     setChildData(newPersonal);
   };
 
@@ -156,7 +158,7 @@ function Form({
           <Custinput
             type={input.type != !null ? input.type : "text"}
             key={input.id + parentValues.index}
-            name={input.name + "-" + parentValues.index}
+            name={input.name}
             id={input.id + "-" + parentValues.index}
             value={childData[input.name] || ""}
             onChange={handleChange}
