@@ -153,8 +153,21 @@ function Aapp() {
     //make {entries: newarr, etc: asd} amd put ({...oldValues, [token]: ...newObj})
   }
 
+  function handleDeleteEntry(e, token, ind) {
+    e.preventDefault();
+    //splice array
+    const newData = parentValues;
+    newData[token].entries.splice(ind, 1);
+    // reset indexes
+    let i = 0;
+    newData[token].entries.forEach((entry) => (entry.index = i++));
+    //save
+    setParentValues((prevValues) => ({ ...prevValues, ...newData }));
+  }
+
   function handleSubmit(childData, submitIdToken) {
     console.log(submitIdToken);
+    // saving when the data is in an array
     if (
       parentValues[submitIdToken].entries &&
       parentValues[submitIdToken].entries.length >= 1
@@ -162,20 +175,14 @@ function Aapp() {
       let newData = parentValues;
       newData[submitIdToken].entries[childData.index] = childData;
       console.log(newData);
-      setParentValues(() => newData);
-      //the child doesnt update anymore when this is clicked,
-      //n either does it when the indexes of the entries are changed
-      // (= the form children dont change even if the parent state changes)
-    } else {
+      setParentValues((prevValues) => ({ ...prevValues, ...newData }));
+
+      // return;
+    } //no array, only one entry
+    else {
       const newData = {};
       newData[submitIdToken] = childData;
-      console.log(newData);
       setParentValues((prevValues) => ({ ...prevValues, ...newData }));
-      /*   setParentValues((oldData) => ({
-        ...oldData,
-        [submitIdToken]: childData,
-      })); */
-      console.log(parentValues);
     }
     console.log(parentValues);
   }
@@ -193,6 +200,12 @@ function Aapp() {
             inputElementArr={educationalInputs}
             submitIdToken="educational"
           ></Form>
+          <button
+            type="button"
+            onClick={(e) => handleDeleteEntry(e, "educational", entry.index)}
+          >
+            Delete
+          </button>
           <button
             type="button"
             onClick={() => changeIndex("educational", entry.index, true)}
