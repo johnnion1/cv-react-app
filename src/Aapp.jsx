@@ -43,7 +43,7 @@ function Aapp() {
       let newData = parentValues;
       newData[submitIdToken].entries[childData.index] = childData;
       console.log(newData);
-      setParentValues(newData);
+      setParentValues((oldValues) => ({ ...oldValues, ...newData }));
       /* setParentValues((prevValues) => ({
       ...prevValues,
       [submitIdToken].[childData.index] : { ...childData },
