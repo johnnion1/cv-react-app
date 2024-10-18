@@ -96,7 +96,7 @@ const workInputs = [
     label: "Employed from:",
   },
   {
-    type: "text",
+    type: "date",
     name: "toEmployed",
     value: "",
     id: "userWorkEnd",
