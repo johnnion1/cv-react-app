@@ -33,7 +33,25 @@ function Aapp() {
       ],
     },
     work: {
-      isActive: false,
+      entries: [
+        //EDIT to the real property names from inputtemplate!
+        {
+          company: "ACOMPANY",
+          position: "Surgon",
+          responsibilities: "Surge",
+          fromEmployed: "2020-01-01",
+          toEmployed: "2024-01-01",
+          index: 0,
+        },
+        {
+          company: "",
+          position: "",
+          responsibilities: "",
+          fromEmployed: "",
+          toEmployed: "",
+          index: 1,
+        },
+      ],
     },
   });
 
@@ -44,20 +62,15 @@ function Aapp() {
       newData[submitIdToken].entries[childData.index] = childData;
       console.log(newData);
       setParentValues((oldValues) => ({ ...oldValues, ...newData }));
-      /* setParentValues((prevValues) => ({
-      ...prevValues,
-      [submitIdToken].[childData.index] : { ...childData },
-    }))
-}
-    setParentValues((prevValues) => ({
-      ...prevValues,
-      [submitIdToken] { ...childData },
-    })); */
     }
   }
 
-  function createForms(arr) {
+  function createForms(arr, type) {
+    if (type !== "educational" || type !== "work") {
+      return;
+    }
     let formsArray = [];
+
     arr.forEach((entry) => {
       formsArray.push(
         <>
@@ -65,16 +78,22 @@ function Aapp() {
             key={"Component" + formsArray.length}
             parentValues={entry}
             handleFormSubmit={handleSubmit}
-            inputElementArr={educationalInputs}
-            submitIdToken="educational"
+            inputElementArr={
+              type == "educational"
+                ? educationalInputs
+                : type == "work"
+                ? workInputs
+                : null
+            }
+            submitIdToken={type}
           ></Form>
         </>
       );
     });
     return formsArray;
   }
-  const edForms = createForms(parentValues.educational.entries);
-
+  const edForms = createForms(parentValues.educational.entries, "educational");
+  const workForms = createForms(parentValues.work.entries, "work");
   return (
     <>
       <Form
@@ -85,6 +104,7 @@ function Aapp() {
         submitIdToken="personal"
       ></Form>
       {edForms}
+      {workForms}
     </>
   );
 }
@@ -120,22 +140,13 @@ function Form({
   };
 
   const handleChange = (e) => {
-    //   setParentValues(newParentData);
-    /* 
-   let newData = {inputs:[]}
-   in parentdata inputs array
-    find the input with the name of formData[0].name (or id)
-    copy to newData.inputs
-    change the value to formData[0].value
-  repeat for every formData item
-   */
     e.preventDefault();
 
     let newPersonal = { ...childData, [e.target.name]: e.target.value };
     console.log(newPersonal);
     setChildData(newPersonal);
   };
-
+  console.log(inputElementArr);
   const inputList = inputElementArr.map((input) => (
     <div
       key={
