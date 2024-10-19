@@ -70,6 +70,7 @@ const entryTemplates = {
     dateOfStudy: "",
     study: "",
     index: null,
+    id: null,
   },
 };
 
@@ -81,6 +82,7 @@ function Aapp() {
       lastName: "",
       birthday: "",
       index: 0,
+      id: crypto.randomUUID(),
     },
     educational: {
       entries: [
@@ -89,12 +91,14 @@ function Aapp() {
           dateOfStudy: "2023-01-01",
           study: "man",
           index: 0,
+          id: crypto.randomUUID(),
         },
         {
           facility: "test",
           dateOfStudy: "",
           study: "",
           index: 1,
+          id: crypto.randomUUID(),
         },
       ],
     },
@@ -119,8 +123,10 @@ function Aapp() {
       return;
     }
     const newIndex = parentValues[token].entries.length;
-    const newEntry = entryTemplates[token];
+    //create copy of entry Templates
+    const newEntry = Array.from(entryTemplates[token]);
     newEntry.index = newIndex;
+    newEntry.id = crypto.randomUUID();
     const newValues = parentValues[token];
     newValues.entries.push(newEntry);
     setParentValues((prevValues) => ({ ...prevValues, [token]: newValues }));
@@ -150,7 +156,6 @@ function Aapp() {
     newParentTokenData.entries = newData;
     setParentValues((prevValues) => ({ ...prevValues, ...newData }));
     console.log(parentValues);
-    //make {entries: newarr, etc: asd} amd put ({...oldValues, [token]: ...newObj})
   }
 
   function handleDeleteEntry(e, token, ind) {
@@ -189,11 +194,9 @@ function Aapp() {
 
   function createForms(arr) {
     let formsArray = [];
-    //use proper keys!!
-    let ctr = 0;
     arr.forEach((entry) => {
       formsArray.push(
-        <div key={"Component" + ctr++}>
+        <div key={entry.id}>
           <Form
             parentValues={entry}
             handleFormSubmit={handleSubmit}
@@ -227,13 +230,14 @@ function Aapp() {
 
   return (
     <>
-      <Form
-        key={"personalComponent"}
-        parentValues={parentValues.personal}
-        handleFormSubmit={handleSubmit}
-        inputElementArr={personalInputs}
-        submitIdToken="personal"
-      ></Form>
+      <div key={parentValues.personal.id}>
+        <Form
+          parentValues={parentValues.personal}
+          handleFormSubmit={handleSubmit}
+          inputElementArr={personalInputs}
+          submitIdToken="personal"
+        ></Form>
+      </div>
       {edForms}
       <button
         type="button"
