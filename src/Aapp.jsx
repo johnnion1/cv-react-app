@@ -66,7 +66,7 @@ function Aapp() {
   }
 
   function createForms(arr, type) {
-    if (type !== "educational" || type !== "work") {
+    if (type !== "educational" && type !== "work") {
       return;
     }
     let formsArray = [];
