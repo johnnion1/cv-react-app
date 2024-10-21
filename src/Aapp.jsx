@@ -1,78 +1,11 @@
 /* eslint-disable react/prop-types */
 import { act, useState } from "react";
 import "./App.css";
+import inputTemplates from "./inputTemplates";
 
-const personalInputs = [
-  {
-    type: "text",
-    name: "firstName",
-    value: "",
-    id: "userFirstName",
-    minlength: 1,
-    maxlegth: 60,
-    label: "First name:", //goes into label or p element
-  },
-  {
-    type: "text",
-    name: "lastName",
-    value: "",
-    id: "userLastName",
-    required: true,
-    minlength: 1,
-    maxlegth: 60,
-    label: "Last name:",
-  },
-  {
-    type: "date",
-    name: "birthday",
-    value: "",
-    id: "userBirthday",
-    required: true,
-    //range eg 1900-2010
-    label: "Birthday:",
-  },
-];
-
-const educationalInputs = [
-  {
-    type: "text",
-    name: "facility",
-    value: "",
-    id: "userEdFacility",
-    minlength: 1,
-    maxlegth: 60,
-    label: "Educational Facility:",
-  },
-  {
-    type: "text",
-    name: "study",
-    value: "",
-    id: "userStudy",
-    required: true,
-    minlength: 1,
-    maxlegth: 60,
-    label: "Study:",
-  },
-  {
-    //should be two dates or range date picker
-    type: "date",
-    name: "dateOfStudy",
-    value: "",
-    id: "userStudyFinish",
-    required: true,
-    //range
-    label: "Finished:",
-  },
-];
-const entryTemplates = {
-  educational: {
-    facility: "",
-    dateOfStudy: "",
-    study: "",
-    index: null,
-    id: null,
-  },
-};
+const personalInputs = inputTemplates.personalInputs;
+const educationalInputs = inputTemplates.educationalInputs;
+const workInputs = inputTemplates.workInputs;
 
 function Aapp() {
   //set states for storing and using values of each child form component (personal, edu and work)
@@ -103,10 +36,27 @@ function Aapp() {
       ],
     },
     work: {
-      isActive: false,
+      entries: [
+        //EDIT to the real property names from inputtemplate!
+        {
+          company: "ACOMPANY",
+          position: "Surgon",
+          responsibilities: "Surge",
+          fromEmployed: "2020-01-01",
+          toEmployed: "2024-01-01",
+          index: 0,
+        },
+        {
+          company: "",
+          position: "",
+          responsibilities: "",
+          fromEmployed: "",
+          toEmployed: "",
+          index: 1,
+        },
+      ],
     },
   });
-  let edForms = null;
   function handleAddEntry(e, token) {
     e.preventDefault();
     //check if last entry is empty
@@ -192,16 +142,26 @@ function Aapp() {
     console.log(parentValues);
   }
 
-  function createForms(arr) {
+  function createForms(arr, type) {
+    if (type !== "educational" && type !== "work") {
+      return;
+    }
     let formsArray = [];
+
     arr.forEach((entry) => {
       formsArray.push(
         <div key={entry.id}>
           <Form
             parentValues={entry}
             handleFormSubmit={handleSubmit}
-            inputElementArr={educationalInputs}
-            submitIdToken="educational"
+            inputElementArr={
+              type == "educational"
+                ? educationalInputs
+                : type == "work"
+                ? workInputs
+                : null
+            }
+            submitIdToken={type}
           ></Form>
           <button
             type="button"
@@ -226,8 +186,8 @@ function Aapp() {
     });
     return formsArray;
   }
-  edForms = createForms(parentValues.educational.entries);
-
+  const edForms = createForms(parentValues.educational.entries, "educational");
+  const workForms = createForms(parentValues.work.entries, "work");
   return (
     <>
       <div key={parentValues.personal.id}>
@@ -244,6 +204,7 @@ function Aapp() {
         className="addBtn"
         onClick={(e) => handleAddEntry(e, "educational")}
       ></button>
+      {workForms}
     </>
   );
 }
@@ -280,11 +241,11 @@ function Form({
 
   const handleChange = (e) => {
     e.preventDefault();
-    //e.target.name - last char!
     let newPersonal = { ...childData, [e.target.name]: e.target.value };
+    console.log(newPersonal);
     setChildData(newPersonal);
   };
-
+  console.log(inputElementArr);
   const inputList = inputElementArr.map((input) => (
     <div
       key={
@@ -300,15 +261,20 @@ function Form({
           </p>
         </>
       ) : (
-        <Custinput
-          type={input.type != !null ? input.type : "text"}
-          key={input.id + parentValues.index}
-          name={input.name}
-          id={input.id + parentValues.index}
-          value={childData[input.name] || ""}
-          onChange={handleChange}
-          required
-        ></Custinput>
+        <>
+          <label htmlFor={input.id + "-" + parentValues.index}>
+            {input.label}
+          </label>
+          <Custinput
+            type={input.type != !null ? input.type : "text"}
+            key={input.id + parentValues.index}
+            name={input.name}
+            id={input.id + "-" + parentValues.index}
+            value={childData[input.name] || ""}
+            onChange={handleChange}
+            required
+          ></Custinput>
+        </>
       )}
     </div>
   ));
@@ -317,11 +283,7 @@ function Form({
     <>
       <form
         //noValidate
-        key={
-          parentValues.index
-            ? submitIdToken + "Form-" + parentValues.index
-            : submitIdToken + "Form"
-        }
+        key={submitIdToken + "Form-" + parentValues.index}
         onSubmit={handleSubmit}
         action="handleSubmit"
         method="post"
