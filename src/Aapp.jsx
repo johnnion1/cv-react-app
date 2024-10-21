@@ -74,7 +74,13 @@ function Aapp() {
     }
     const newIndex = parentValues[token].entries.length;
     //create copy of entry Templates
-    const newEntry = Array.from(entryTemplates[token]);
+    const newEntry = Array.from(
+      token == "educational"
+        ? educationalInputs
+        : token == "work"
+        ? workInputs
+        : null
+    );
     newEntry.index = newIndex;
     newEntry.id = crypto.randomUUID();
     const newValues = parentValues[token];
