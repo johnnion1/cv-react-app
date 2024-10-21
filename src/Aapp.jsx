@@ -165,19 +165,19 @@ function Aapp() {
           ></Form>
           <button
             type="button"
-            onClick={(e) => handleDeleteEntry(e, "educational", entry.index)}
+            onClick={(e) => handleDeleteEntry(e, type, entry.index)}
           >
             Delete
           </button>
           <button
             type="button"
-            onClick={() => changeIndex("educational", entry.index, true)}
+            onClick={() => changeIndex(type, entry.index, true)}
           >
             Up
           </button>
           <button
             type="button"
-            onClick={() => changeIndex("educational", entry.index, false)}
+            onClick={() => changeIndex(type, entry.index, false)}
           >
             Down
           </button>
@@ -205,6 +205,11 @@ function Aapp() {
         onClick={(e) => handleAddEntry(e, "educational")}
       ></button>
       {workForms}
+      <button
+        type="button"
+        className="addBtn"
+        onClick={(e) => handleAddEntry(e, "work")}
+      ></button>
     </>
   );
 }
